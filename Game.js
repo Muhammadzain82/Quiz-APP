@@ -23,9 +23,10 @@ fetch("https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=mul
     console.log(LoadedQuestions.results);
     questions = LoadedQuestions.results.map( LoadedQuestion => {
         const formattedQuestion = {
-            question: LoadedQuestion.question
+            question: decodeHtml(LoadedQuestion.question)
         };
         const answerChoices = [... LoadedQuestion.incorrect_answers];
+
         formattedQuestion.answer = Math.floor(Math.random() * 3) + 1;
         answerChoices.splice(formattedQuestion.answer -1, 0, LoadedQuestion.correct_answer);
 
@@ -74,7 +75,9 @@ getNewQuestion = () => {
 
     choices.forEach(choice => {
         const number = choice.dataset['number'];
-        choice.innerText = currentQuestion["choice" + number];
+        const decoded = decodeHtml(currentQuestion["choice" + number]);
+        // choice.innerText = currentQuestion["choice" + number];
+        choice.innerText = decoded
     });
     
     availableQuestions.splice(questionIndex, 1);
@@ -112,3 +115,8 @@ incrementScore = num => {
     }
 };
 
+function decodeHtml(html) {
+    var txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
+}
